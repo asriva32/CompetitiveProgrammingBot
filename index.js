@@ -1,5 +1,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const mongoose = require('mongoose');
+// connect to mongodb
+const dbURI = 'mongodb+srv://cfuser:CMwillhappen@competitiveprogrammingb.5erfw.mongodb.net/codeforces-handles?retryWrites=true&w=majority&appName=CompetitiveProgrammingBot';
+mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true});
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
