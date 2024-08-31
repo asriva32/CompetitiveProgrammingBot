@@ -2,12 +2,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const mongoose = require('mongoose');
 // connect to mongodb
-const dbURI = 'mongodb+srv://cfuser:CMwillhappen@competitiveprogrammingb.5erfw.mongodb.net/codeforces-handles?retryWrites=true&w=majority&appName=CompetitiveProgrammingBot';
-mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true});
+
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+const dbURI = 'mongodb+srv://cfuser:CMwillhappen@competitiveprogrammingb.5erfw.mongodb.net/codeforces-handles?retryWrites=true&w=majority&appName=CompetitiveProgrammingBot';
+mongoose.connect(dbURI)
+	.then((result) => console.log('connected to db'))
+	.catch((err) => console.log(err));
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
