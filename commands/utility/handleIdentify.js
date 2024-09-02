@@ -140,12 +140,10 @@ module.exports = {
 			let Submissions = data.result;
 			let found = false;
 			for(let i = 0; i < Submissions.length;i++){
-				if(Submissions[i].verdict === "COMPILATION_ERROR"){
+				if(Submissions[i].verdict === "COMPILATION_ERROR" && Submissions[i].problem.contestId === problemSelected.contestId && Submissions[i].problem.index === problemSelected.index){
 					console.log(Submissions[i].problem);
-					if(Submissions[i].problem.contestId === problemSelected.contestId && Submissions[i].problem.index === problemSelected.index){
-						found = true;
-						break;
-					}
+					found = true;
+					break;
 				}
 			}
 			if(found){
