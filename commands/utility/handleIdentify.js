@@ -67,7 +67,6 @@ async function addHandle(userName, userHandle) {
     }
 }
 
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('handle-identify')
