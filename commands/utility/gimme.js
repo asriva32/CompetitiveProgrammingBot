@@ -36,10 +36,15 @@ module.exports = {
             let listOfRating = [];
             for(let Problem of Problems){
                 if(Problem.rating == Rating){
+                    // make sure user has not already solved this problem
                     listOfRating.push(Problem);
                 }
             }
             let len = listOfRating.length;
+            if(len == 0){
+                await interaction.reply(`You have solved every ${Rating} rating problem!`);
+                return;
+            }
             let setOfProblems = new Set();
             while(setOfProblems.size < Math.min(len, 5)){
                 let index = Math.floor(Math.random() * len);
@@ -50,7 +55,6 @@ module.exports = {
                 if(Problem.contestId >= newest){
                     newest = Problem.contestId;
                     problemSelected = Problem;
-                    console.log(problemSelected);
                 }
             }
             problemUrl = 'https://codeforces.com/problemset/problem/' + problemSelected.contestId + '/' + problemSelected.index;
