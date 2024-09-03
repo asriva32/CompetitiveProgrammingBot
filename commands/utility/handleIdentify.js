@@ -1,71 +1,7 @@
 const { SlashCommandBuilder, InviteTargetType } = require('discord.js');
-const mongoose = require('mongoose');
-const Handle = require('/Users/arnavsrivastava/Desktop/CompetitiveProgrammingBot/models/handles');
+const mongoFunctions = require('/Users/arnavsrivastava/Desktop/CompetitiveProgrammingBot/functions');
 
-async function findUserByDiscord(username){
-	try {
-		const user = await Handle.findOne({ user: username });
-		if (user) {
-			console.log('User exists:', user);
-			return true;
-		} else {
-			console.log('User does not exist');
-			return false;
-		}
-	} catch (error) {
-		console.error('Error finding user by username:', error);
-		throw error;
-	}
-}
 
-async function findUserByHandle(handle) {
-	try {
-		const user = await Handle.findOne({ handle: handle });
-		if (user) {
-			console.log('User exists:', user);
-			return true;
-		} else {
-			console.log('User does not exist');
-			return false;
-		}
-	} catch (error) {
-		console.error('Error finding user by handle:', error);
-		throw error;
-	}
-}
-
-async function checkCodeforcesHandle(url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.status === 'OK') {
-            console.log('Handle exists:', data.result[0]);
-            return true;
-        } else {
-            console.log('Handle does not exist');
-            return false;
-        }
-    } catch (error) {
-        console.error('Error checking handle on Codeforces:', error);
-        throw error;
-    }
-}
-
-async function addHandle(userName, userHandle) {
-    try {
-        const newHandle = new Handle({
-            user: userName,
-            handle: userHandle
-        });
-        const savedHandle = await newHandle.save();
-        console.log('Handle added:', savedHandle);
-        return savedHandle;
-    } catch (error) {
-        console.error('Error adding handle to MongoDB:', error);
-        throw error;
-    }
-}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -80,20 +16,20 @@ module.exports = {
 		const handle = interaction.options.getString('handle');
 		const userID = interaction.user.id.toString();
 		// check if userID already exists
-		let res = await findUserByDiscord(userID);
+		let res = await mongoFunctions.getHandle(userID);
 		if(res){
 			await interaction.reply('You are already connected!');
 			return;
 		}
 		const handleURL = `https://codeforces.com/api/user.info?handles=${handle}&checkHistoricHandles=false`;
 		// check if handle exists
-		res = await checkCodeforcesHandle(handleURL);
+		res = await mongoFunctions.checkCodeforcesHandle(handleURL);
 		if(!res){
 			await interaction.reply('This handle does not exist!');
 			return;
 		}
 		// check if handle is already in use
-		res = await findUserByHandle(handle)
+		res = await mongoFunctions.getUser(handle)
 		if(res){
 			await interaction.reply('This handle is already in use by another user!');
 			return;
@@ -146,7 +82,7 @@ module.exports = {
 				}
 			}
 			if(found){
-				addHandle(userID, handle);
+				mongoFunctions.addHandle(userID, handle);
 				await interaction.followUp('Codeforces handle connected!');
 			}else{
 				await interaction.followUp('No submission found for problem');
