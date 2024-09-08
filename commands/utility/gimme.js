@@ -23,28 +23,42 @@ module.exports = {
         let problemUrl;
         try{
 			const response = await fetch(url);
+            url = `https://codeforces.com/api/user.status?handle=${res}`;
+            const user_response = await fetch(url);
 			if (!response.ok) {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
 			let data = await response.json();
+            let user_data = await user_response.json();
 			if(data.status !== "OK"){
 				await interaction.reply('Codeforces api is down');
 				return;
 			}
+            let Submissions = user_data.result;
+            let solved = new Set();
+            for(let entry of Submissions){
+                if(entry.verdict == "OK"){
+                    solved.add(entry.problem.name);
+                }
+            }
 			let Problems = data.result.problems;
 			
             let listOfRating = [];
             for(let Problem of Problems){
                 if(Problem.rating == Rating){
                     // make sure user has not already solved this problem
-                    listOfRating.push(Problem);
+                    if(!solved.has(Problem.name)){
+                        listOfRating.push(Problem);
+                    }
                 }
             }
+            
             let len = listOfRating.length;
             if(len == 0){
                 await interaction.reply(`You have solved every ${Rating} rating problem!`);
                 return;
             }
+            console.log(len);
             let setOfProblems = new Set();
             while(setOfProblems.size < Math.min(len, 5)){
                 let index = Math.floor(Math.random() * len);
@@ -52,16 +66,18 @@ module.exports = {
             }
             let newest = -1;
             for(let Problem of setOfProblems){
-                if(Problem.contestId >= newest){
-                    newest = Problem.contestId;
+                if(newest < Problem.contestId){
                     problemSelected = Problem;
+                    newest = Problem.contestId;
                 }
             }
+            console.log(problemSelected)
             problemUrl = 'https://codeforces.com/problemset/problem/' + problemSelected.contestId + '/' + problemSelected.index;
 		} catch (error) {
 			console.error(error.message);
 			return;
 		}
+        
         await interaction.reply(`Recommended problem for ${res}\n` + problemUrl);
     },
 };
