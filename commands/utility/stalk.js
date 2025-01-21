@@ -52,17 +52,33 @@ module.exports = {
                 timediff: diff
             });
         }
-        // TODO: figure out how to sort by timediff and add to embed
-        /*
+        problems.sort(function(x, y) {
+            return (x['timediff'] > y['timediff']) - (x['timediff'] < y['timediff']); 
+        });
+        
+        for(let i = 0; i < problems.length;i++){
+            const days = Math.floor(problems[i].timediff / (60 * 60 * 24));
+            problems[i].timediff = days;
+        }
+        
         const generateEmbed = (page) => {
             const start = page * problemsPerPage;
             const end = start + problemsPerPage;
             const currentProblems = problems.slice(start, end);
 
             const description = currentProblems
-                .map((p) => `${p.name} [${p.rating}] (${p.daysAgo} days ago)`)
+                .map((p) => {
+                    let timeAgo = `${p.timediff} days ago`; 
+                    if (p.daysAgo === 0) {
+                        timeAgo = 'today';
+                    } else if (p.daysAgo === 1) {
+                        timeAgo = 'yesterday';
+                    }
+                    return `${p.name} [${p.rating}]  (${timeAgo})`;
+                })
                 .join('\n');
-
+            
+            
             return new EmbedBuilder()
                 .setTitle('Recently Solved Problems')
                 .setDescription(description)
@@ -100,7 +116,7 @@ module.exports = {
         collector.on('end', () => {
             interaction.editReply({ components: [] });
         });
-        */
+        
 
     },
 };
