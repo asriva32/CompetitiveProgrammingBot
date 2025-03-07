@@ -1,4 +1,5 @@
 const fs = require('node:fs');
+require('dotenv').config();
 const path = require('node:path');
 const mongoose = require('mongoose');
 // connect to mongodb
@@ -8,7 +9,7 @@ const { token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const dbURI = 'mongodb+srv://cfuser:CMwillhappen@competitiveprogrammingb.5erfw.mongodb.net/codeforces-handles?retryWrites=true&w=majority&appName=CompetitiveProgrammingBot';
+const dbURI = process.env.DB_URI;
 mongoose.connect(dbURI)
 	.then((result) => console.log('connected to db'))
 	.catch((err) => console.log(err));

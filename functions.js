@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Handle = require('/Users/arnavsrivastava/Desktop/CompetitiveProgrammingBot/models/handles');
+const Handle = require('/Users/arnavsrivastava/Desktop/Projects/CompetitiveProgrammingBot/models/handles');
 
 async function getHandle(username){
 	try {

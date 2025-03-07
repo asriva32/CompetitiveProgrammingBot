@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, InviteTargetType } = require('discord.js');
-const mongoFunctions = require('/Users/arnavsrivastava/Desktop/CompetitiveProgrammingBot/functions');
+const mongoFunctions = require('/Users/arnavsrivastava/Desktop/Projects/CompetitiveProgrammingBot/functions');
 
 module.exports = {
 	data: new SlashCommandBuilder()
